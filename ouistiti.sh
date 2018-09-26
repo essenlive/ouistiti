@@ -5,5 +5,6 @@
 cd /
 cd home/pi/Desktop/ouistiti/
 pgrep gphoto | xargs kill
-sudo python print-camera.py
+# sudo python print-webcam.py
 cd /
+s
