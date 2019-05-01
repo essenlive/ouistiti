@@ -15,7 +15,7 @@ BASE_WIDTH = 512
 
 p = Usb(0x04b8, 0x0e15)
 printer = init_printer(0x04b8, 0x0e15, 1)
-brightnessAimed = 300
+brightnessAimed = 250
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(21, GPIO.IN, pull_up_down = GPIO.PUD_UP)
@@ -36,12 +36,12 @@ while True:
 ## TAKE PHOTOS
    for x in range(1, 3):
     ## TAKE PHOTO
-       filename = dateDirectory +'__' + str(x) + '.jpg'
+       filename = dateDirectory +'__' + str(x) + '.mjpeg'
        pathArchive = os.path.join('./files/archives/', filename)
 
        print('GETTING FILE')
 
-       os.system('fswebcam -r 1920x1080 --no-banner ' + pathArchive)
+       os.system('fswebcam -r 1920x1080 --no-banner --palette MJPEG' + pathArchive)
 
     ## ENHANCE PHOTO
        print('RESIZING IMAGE')
@@ -73,10 +73,11 @@ while True:
    printer.print_image_from_file('./files/printables/print_1.png', 1)
    printer.linefeed(1)
    printer.print_image_from_file('./files/printables/print_2.png', 1)
+
    printer.linefeed(4)
    printer.cut()
 
 ## REST AND WAIT FOR BUTTON PRESS
-   os.system('rclone copy ./files/printables/ dx:photobooth')
+   time.sleep(1)
    trigger = 1
    print('WAITING FOR NEXT PRESS')
