@@ -41,7 +41,7 @@ while True:
 
        print('GETTING FILE')
 
-       os.system('fswebcam -r 1920x1080 --no-banner ' + pathArchive)
+       os.system('fswebcam -r 1920x1080 --no-banner --jpeg 85 ' + pathArchive)
 
     ## ENHANCE PHOTO
        print('RESIZING IMAGE')

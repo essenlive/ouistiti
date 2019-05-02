@@ -4,6 +4,7 @@ import io
 import base64
 import numpy as np
 import usb.core
+import PIL
 from functools import wraps
 from PIL import Image
 
