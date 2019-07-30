@@ -1,0 +1,34 @@
+{
+  "name": "ouistiti",
+  "version": "0.0.1",
+  "description": "A simple node app for running a photo booth",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/malfernion/photoboothExpress.git"
+  },
+  "keywords": [
+    "pi",
+    "raspberry",
+    "gphoto2",
+    "libgphoto",
+    "photobooth",
+    "node"
+  ],
+  "author": "David Ernsting",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/malfernion/photoboothExpress/issues"
+  },
+  "homepage": "https://github.com/malfernion/photoboothExpress#readme",
+  "dependencies": {
+    "gphoto2_ffi": "git+https://github.com/soixantecircuits/node-gphoto-fii.git#7d3f87e",
+    "johnny-five": "^1.2.0",
+    "raspi-io": "^10.0.2",
+    "ref": "^1.3.5"
+  }
+}

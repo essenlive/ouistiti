@@ -1,12 +1,3 @@
-install apt dependecies
-Numpy
-fswebcam
-
-Install requirements with sudo
-pyusb
-pillow
-python-escpos
-
-create folders
-./files/archives/
-./files/printables/
+# Ouistiti
+A simple node app to take pictures with a DSLR and print it with a thermal printer.
+Uses Gphoto2, Johnny-Five and a lot of code from photoboothExpress.
