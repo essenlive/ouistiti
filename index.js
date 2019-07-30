@@ -13,15 +13,18 @@ try {
   config = require('./config.json');
 } catch (e) {
   config = {
-    "destination": "images",
+    "destination": "Session1",
     "fileName": "__"
   }
 }
-const destination = `./files/${config.destination}`;
+const destination = `./files/${config.destination}/`;
 const fileName = config.fileName;
+if (!fs.existsSync(destination)) {
+    fs.mkdirSync(destination);
+}
 
 // local variables
-let configured = false;
+let configured = false, test = false;
 let context, camera;
 let fileExtension = '.jpg';
 let images = [];
@@ -47,9 +50,10 @@ const initCamera = ()=>{
     }
   });
 };
+
 // take picture
 const takePicture = ()=>{
-  console.log('Taking Picture');
+  console.log('Taking Picture', destination);
   let imageName = fileName + Date.now() + fileExtension;
   let dest_path = path.join(destination, imageName);
 
@@ -113,13 +117,14 @@ board.on('ready', async() => {
 
   // On button press
   button.on("release", ()=>{
-    console.log("Button released");
+    if (test || !configured)return
+    console.log("Take Picture");
     takePicture();
 
   });
   button.on("hold", ()=>{
-    console.log("Button held");
-
+    console.log("Test for connection");
+    test = true;
   });
 
 });
