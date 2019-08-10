@@ -6,3 +6,5 @@ Uses Gphoto2, Johnny-Five and a lot of code from photoboothExpress.
 git
 nvm
 libudev-dev
+Imagemagick
+PM2
