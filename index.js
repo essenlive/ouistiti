@@ -5,15 +5,17 @@ const gphoto = require('./node_modules/gphoto2_ffi/index.js');
 const Raspi = require('raspi-io').RaspiIO;
 const five = require('johnny-five');
 const sleep = require('util').promisify(setTimeout)
-const thermalPrintImage = require('./testPrint.js')
-const prepareImage = require('./testImage.js')
+const PrintImage = require('./PrintImage.js')
+const PrepareImage = require('./PrepareImage.js')
 
 
 // Try loading local config from config.json or load defaults
 let config = {
     "destination": "Session1",// Name of the folder in files
     "fileName": "__", // Prefix for the picture names
-    "delay": 5000 // Delay between trigger and picture
+    "delay": 1000, // Delay between trigger and picture
+    "logoFile": "logo.jpg", // Name of the logo file in the ./file folder
+    "photoNumber" : 2 // Number of photos to take
 };
 try {
     console.log('Loaded config file');
@@ -22,15 +24,14 @@ try {
 
 
 // Define variables
-const destination = `./files/${config.destination}/`;
-if (!fs.existsSync(destination)) fs.mkdirSync(destination);
-const tempFolder = './files/tmp/';
-if (!fs.existsSync(tempFolder)) fs.mkdirSync(tempFolder);
+const destination = `./files/${config.destination}/`; if (!fs.existsSync(destination)) fs.mkdirSync(destination);
+const tempFolder = './files/tmp/'; if (!fs.existsSync(tempFolder)) fs.mkdirSync(tempFolder);
 const fileName = config.fileName;
+const logofile = config.logoFile;
 const delay = config.delay;
-const fileExtension = '.jpg';
+const photoNumber = config.photoNumber;
 
-let test = false, busy = true;
+let configured = false, test = false, busy = true;
 let context, camera;
 let imagesPaths = [];
 
@@ -58,7 +59,7 @@ const initCamera = ()=>{
 // Define take picture
 const takePicture = ()=>{
     console.log('Taking Picture', destination);
-    let imageName = fileName + Date.now() + fileExtension;
+    let imageName = `${fileName}${Date.now()}.jpg`;
     let dest_path = path.join(destination, imageName);
     
     let pathPtr = ref.alloc(gphoto.CameraFilePath);
@@ -99,10 +100,6 @@ const takePicture = ()=>{
 };
 
 
-
-
-
-
 // Set up board and wait for it to be ready
 board.on('ready', async () => {
     
@@ -121,16 +118,22 @@ board.on('ready', async () => {
         console.log('Camera initialized');
 
         // Wait for Printer initialisation
-        await prepareImage.transform('./files/logo.jpg', `${tempFolder}logo-converted.png`)
-        console.log('Logo transformed initialized');
+        //TODO
 
+        // Prepare logo
+        await PrepareImage.transform(`./files/${logofile}`, `${tempFolder}logo-converted.png`)
+        console.log('Logo transformed');
 
+        configured = true;
         busy = false;
         relay.open();
     }
-    catch (error) { console.log(error); return }
+    catch (error) { console.log(error);}
+    if(!configured) console.log('shit');
     
-    // On button press -> Take Picture and print
+
+
+    // On button press -> Take Pictures and print
     button.on("release", async ()=>{
 
         console.log("----- Trigger pressed");
@@ -151,24 +154,35 @@ board.on('ready', async () => {
         console.log("----- Turn on Flash"); 
         relay.open();
 
+        // Start with logo
+        imagesPaths[0] = `${tempFolder}logo-converted.png`;
+
         // Take pictures
-        for (let index = 0; index < 1; index++) {
+        for (let index = 1; index <= photoNumber; index++) {
             imagesPaths[index] = takePicture();
             console.log(`----- Taken Picture in ${imagesPaths[index]}`);
-            // Enhance picture
-            console.log("----- Prepare Picture");
-            imagesPaths[index] = await prepareImage.transform(imagesPaths[0], `${tempFolder}${index}-converted.png`)
+        }
+
+        // Enhance pictures
+        for (let index = 1; index <= photoNumber; index++) {
+            imagesPaths[index] = await PrepareImage.transform(imagesPaths[index], `${tempFolder}${index}-converted.png`, true);
+            console.log(`----- Converted Picture in ${imagesPaths[index]}`);
         }
 
         console.log(imagesPaths);
-        
+
+        // Merge images
+        console.log("----- Merging Images");
+        const mergedImage = await PrepareImage.merge(imagesPaths, "./files/merged.png");
+
+
         // Shut down flash
         console.log("----- Shutting Flash");
         relay.close();
 
         // Take picture
         console.log("----- Print Pictures");
-        await thermalPrintImage(`${tempFolder}logo-converted.png`);
+        await PrintImage(mergedImage);
         // Turn on flash
         console.log("----- Wait for next photo");
         relay.open();
