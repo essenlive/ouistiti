@@ -1,19 +1,49 @@
 const escpos = require('escpos');
 
-const device = new escpos.USB();
-const printer = new escpos.Printer(device);
+const loadImage = (imagePath)=>{
+    return new Promise((resolve, reject) => {
+        escpos.Image.load(imagePath, (image) => {
+            if (typeof image.data !== 'undefined') resolve(image);
+            else{reject(image)};
+        })
+    })
+}
 
-escpos.Image.load('./files/test-monochrome.png', function (image) {
 
-    device.open(function () {
+const printImage = async(image) => {
 
-        printer
-            .align('ct')
-            .raster(image)
+    const device = await escpos.USB.getDevice();
+    const printer = await escpos.Printer.create(device);
+    printer
+        .align('ct')
+        .raster(image)
+        .feed(2)
+        .cut()
+        .close();
+}
 
-            .cut()
-            .close();
 
-    });
+const thermalPrintImage = async(imagePath)=>{
+    try {
+        console.log('Try Printing');
+        const loadedImage = await loadImage(imagePath);
+        await printImage(loadedImage)
+        
+    } catch (error) {
+        console.log('Error while printing :', error);
+        return
+    }
+}
 
-});
+module.exports = thermalPrintImage;
+
+// (async () => {
+//     try {
+//         await thermalPrintImage("./files/converted-logo.png");
+//         console.log("DONE : ");
+
+//     } catch (error) {
+//         console.log(error);
+
+//     }
+// })()

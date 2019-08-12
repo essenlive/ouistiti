@@ -2,10 +2,11 @@ const path = require('path');
 const ref = require('ref');
 const fs = require('fs');
 const gphoto = require('./node_modules/gphoto2_ffi/index.js');
-const gphoto_get_config = require("./node_modules/gphoto2_ffi/get_config");
 const Raspi = require('raspi-io').RaspiIO;
 const five = require('johnny-five');
 const sleep = require('util').promisify(setTimeout)
+const thermalPrintImage = require('./testPrint.js')
+const prepareImage = require('./testImage.js')
 
 
 // Try loading local config from config.json or load defaults
@@ -23,14 +24,15 @@ try {
 // Define variables
 const destination = `./files/${config.destination}/`;
 if (!fs.existsSync(destination)) fs.mkdirSync(destination);
+const tempFolder = './files/tmp/';
+if (!fs.existsSync(tempFolder)) fs.mkdirSync(tempFolder);
 const fileName = config.fileName;
 const delay = config.delay;
 const fileExtension = '.jpg';
 
-let configured = false, test = false;
+let test = false, busy = true;
 let context, camera;
-let images = [];
-let imageIndex = 0;
+let imagesPaths = [];
 
 
 // Define Board
@@ -93,15 +95,14 @@ const takePicture = ()=>{
         console.log("Image saved in " + dest_path);
         gphoto.gp_file_unref(dest);
         
-        images.push(imageName);
-        return 0;
+    return dest_path;
 };
-    
-//Define print picture
-const printPicture = async()=>{
-    await printer.printImage('./assets/olaii-logo-black.png')
-}
-    
+
+
+
+
+
+
 // Set up board and wait for it to be ready
 board.on('ready', async () => {
     
@@ -114,43 +115,73 @@ board.on('ready', async () => {
     // Create relay hardware instance. -> The Flash
     let relay = new five.Relay(28);
     
-    // Wait for camera initialisation
     try {
-        configured = await initCamera();
-        console.log(configured ? 'Camera initialized' : "Error in configuration");
+        // Wait for camera initialisation
+        await initCamera();
+        console.log('Camera initialized');
+
+        // Wait for Printer initialisation
+        await prepareImage.transform('./files/logo.jpg', `${tempFolder}logo-converted.png`)
+        console.log('Logo transformed initialized');
+
+
+        busy = false;
         relay.open();
     }
-    catch (e) { console.log(e); }
+    catch (error) { console.log(error); return }
     
     // On button press -> Take Picture and print
-    button.on("release", ()=>{
-        console.log("Trigger pressed");
+    button.on("release", async ()=>{
+
+        console.log("----- Trigger pressed");
         
         // Check if camera is initialized and not artifact from test
-        if (test || !configured) return
+        if (test || busy) return
         
+        busy = true;
         // Shut down flash
-        console.log("Shutting Flash"); 
+        console.log("----- Shutting Flash"); 
         relay.close();
 
         // Wait for delay
-        console.log(`Waiting ${delay}ms`); 
+        console.log(`----- Waiting ${delay}ms`); 
         await sleep(delay)
 
         // Turn on flash
-        console.log("Turn on Flash"); 
+        console.log("----- Turn on Flash"); 
         relay.open();
 
-        // Take picture
-        console.log("Take Picture");        
-        takePicture();
+        // Take pictures
+        for (let index = 0; index < 1; index++) {
+            imagesPaths[index] = takePicture();
+            console.log(`----- Taken Picture in ${imagesPaths[index]}`);
+            // Enhance picture
+            console.log("----- Prepare Picture");
+            imagesPaths[index] = await prepareImage.transform(imagesPaths[0], `${tempFolder}${index}-converted.png`)
+        }
+
+        console.log(imagesPaths);
         
+        // Shut down flash
+        console.log("----- Shutting Flash");
+        relay.close();
+
+        // Take picture
+        console.log("----- Print Pictures");
+        await thermalPrintImage(`${tempFolder}logo-converted.png`);
+        // Turn on flash
+        console.log("----- Wait for next photo");
+        relay.open();
+
+        busy = false;
+
     });
     
     // On Button hold -> Check states
-    button.on("hold", ()=>{
+    button.on("hold", async()=>{
         console.log("Test for connection");
         test = true;
+        
     });
     
 });
