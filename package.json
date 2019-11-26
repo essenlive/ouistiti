@@ -5,11 +5,15 @@
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js"
+    "start": "node index.js",
+    "camera": "node testits/camera.js",
+    "imageMagick": "node testits/imangeMagick.js",
+    "arduino": "node testits/arduino.js",
+    "print": "node testits/print.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/malfernion/photoboothExpress.git"
+    "url": "git+https://github.com/essenlive/ouistiti.git"
   },
   "keywords": [
     "pi",

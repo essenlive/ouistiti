@@ -1,15 +1,10 @@
 const path = require('path');
 const ref = require('ref');
-const fs = require('fs');
-const gphoto = require('./node_modules/gphoto2_ffi/index.js');
+const gphoto = require('gphoto2_ffi');
 
 
 // Define variables
-const destination = `./files/test/`; if (!fs.existsSync(destination)) fs.mkdirSync(destination);
-const tempFolder = './files/tmp/'; if (!fs.existsSync(tempFolder)) fs.mkdirSync(tempFolder);
-const fileName = "test";
 let context, camera;
-let imagesPaths = [];
 
 // Define initialise camera
 const initCamera = () => {
@@ -27,9 +22,9 @@ const initCamera = () => {
 
 // Define take picture
 const takePicture = () => {
-    console.log('Taking Picture', destination);
-    let imageName = `${fileName}${Date.now()}.jpg`;
-    let dest_path = path.join(destination, imageName);
+    console.log('Taking Picture', './');
+    let imageName = `test.jpg`;
+    let dest_path = path.join('./', imageName);
 
     let pathPtr = ref.alloc(gphoto.CameraFilePath);
 
@@ -74,12 +69,10 @@ const takePicture = () => {
         // Wait for camera initialisation
         await initCamera();
         console.log('Camera initialized');
-        
         // Take pictures
-        for (let index = 1; index <= photoNumber; index++) {
-            imagesPaths[index] = takePicture();
-            console.log(`----- Taken Picture in ${imagesPaths[index]}`);
-        }
+        let imagePath = takePicture();
+        console.log(`----- Taken Picture`, imagePath);
+    
     }
     catch (error) { console.log(error); }
 })()

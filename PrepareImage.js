@@ -2,7 +2,7 @@ const fs = require('fs')
 const gm = require('gm').subClass({ imageMagick: true });
 
 const PrepareImage = {
-    transform : (sourcePath ='./files/Lenna.png', destPath='./files/converted.png', square = false)=>{
+    transform : (sourcePath ='./photos/Lena.png', destPath='./photos/converted.png', square = false)=>{
         console.log(`Preparing image : ${sourcePath}`);    
         return new Promise((resolve,reject)=>{
             if(square){
