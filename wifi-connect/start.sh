@@ -30,4 +30,4 @@ else
 fi
 
 # Start your application here.
-node test.js
+sleep infinity

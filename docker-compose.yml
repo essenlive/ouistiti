@@ -1,0 +1,37 @@
+version: '2'
+volumes:
+    resin-data:
+services:
+  node-red:
+    build: ./node-red
+    volumes:
+      - 'resin-data:/data'
+    restart: always
+    privileged: true
+    network_mode: host
+    labels:
+      io.balena.features.kernel-modules : '1' 
+      io.balena.features.supervisor-api: '1'
+    environment:
+      - "USERNAME=balena"
+      - "PASSWORD=balena"
+      - "ENCRIPTION_KEY=balena"
+    cap_add:
+      - SYS_RAWIO
+    devices:
+      - "/dev/mem:/dev/mem"
+      - "/dev/gpiomem:/dev/gpiomem"
+      - "/dev/i2c-1:/dev/i2c-1"
+      - /dev/ttyUSB0:/dev/ttyUSB0
+      - /dev/ttyUSB1:/dev/ttyUSB1
+    ports:
+      - 80:80
+  wifi-connect:
+      build: ./wifi-connect
+      network_mode: "host"
+      labels:
+          io.balena.features.dbus: '1'
+      cap_add:
+          - NET_ADMIN
+      environment:
+          DBUS_SYSTEM_BUS_ADDRESS: "unix:path=/host/run/dbus/system_bus_socket"
