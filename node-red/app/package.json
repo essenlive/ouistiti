@@ -28,13 +28,12 @@
   },
   "homepage": "https://github.com/balenablocks/balena-node-red#readme",
   "dependencies": {
-    "bcryptjs": "^2.4.3",
-    "escpos" : "3.0.0-alpha.6",
-    "escpos-usb" : "3.0.0-alpha.4",
-    "gphoto2" : "0.3.2",
-    "node-hid" : "2.1.2",
+    "escpos": "3.0.0-alpha.6",
+    "escpos-usb": "3.0.0-alpha.4",
+    "gphoto2": "0.3.2",
     "usb": "^1.9.2",
-    "node-red-contrib-telegrambot" : "14.3.0"
+    "node-red-contrib-telegrambot": "14.3.0",
+    "sharp": "0.31.1"
   },
   "overrides": {
     "usb": "^1.9.2"

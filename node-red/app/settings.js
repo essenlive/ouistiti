@@ -1,5 +1,3 @@
-const bcrypt = require('bcryptjs');
-const PASSWORD = bcrypt.hashSync(process.env.PASSWORD, 8);
 /**
  * Copyright 2013, 2016 IBM Corp.
  *
@@ -180,6 +178,7 @@ module.exports = {
         gphoto2: require("gphoto2"),
         escpos: require("escpos"),
         escposUSB: require("escpos-usb"),
+        sharp: require("sharp"),
         // octalbonescript:require('octalbonescript'),
         // jfive:require("johnny-five"),
         // j5board:require("johnny-five").Board({repl:false})
