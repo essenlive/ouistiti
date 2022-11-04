@@ -179,9 +179,6 @@ module.exports = {
         escpos: require("escpos"),
         escposUSB: require("escpos-usb"),
         sharp: require("sharp"),
-        // octalbonescript:require('octalbonescript'),
-        // jfive:require("johnny-five"),
-        // j5board:require("johnny-five").Board({repl:false})
     },
 
     // The following property can be used to order the categories in the editor
@@ -191,12 +188,12 @@ module.exports = {
     //paletteCategories: ['subflows', 'input', 'output', 'function', 'social', 'mobile', 'storage', 'analysis', 'advanced'],
     editorTheme: {
         page: {
-            title: "balena Node-RED",  
+            title: "ouistiti",  
             favicon: "/usr/src/app/assets/favicon.ico"
         },
         header: {
-            title: "balena Node-RED",
-            image: "/usr/src/app/assets/logo.png", // or null to remove image
+            title: "ouistiti",
+            image: null, // or null to remove image
             url: "https://balena.io"
         },
         login: {
