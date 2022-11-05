@@ -32,10 +32,10 @@
     "escpos-usb": "3.0.0-alpha.4",
     "gphoto2": "0.3.2",
     "usb": "^1.9.2",
-    "node-red-contrib-telegrambot": "14.3.0",
     "sharp": "0.31.1",
-    "escpos-buffer": "^2.0.1",
-    "escpos-template": "1.1.0"
+    "node-red-contrib-telegrambot": "14.3.0",
+    "@prescient-devices/node-red-contrib-usb-camera" : "1.1.3",
+    "node-red-contrib-balena" : "^1.0.1"
   },
   "overrides": {
     "usb": "^1.9.2"

@@ -189,11 +189,11 @@ module.exports = {
     editorTheme: {
         page: {
             title: "ouistiti",  
-            favicon: "/usr/src/app/assets/favicon.ico"
+            favicon: "/usr/src/app/assets/favicon.png"
         },
         header: {
             title: "ouistiti",
-            image: null, // or null to remove image
+            image: "/usr/src/app/assets/logo.png", // or null to remove image
             url: "https://balena.io"
         },
         login: {
