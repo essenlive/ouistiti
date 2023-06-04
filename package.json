@@ -1,0 +1,21 @@
+{
+  "name": "ousititi",
+  "version": "1.0.0",
+  "description": "A Node-RED application with [balena-supervisor](https://balena.io/docs/reference/supervisor/supervisor-api/) flow [support](https://github.com/balena-io-projects/node-red-contrib-balena), can be managed remotely via balena [publicURL](https://balena.io/docs/learn/manage/actions/#enable-public-device-url)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "local": "grep -v '^#' .env | sed 's/^/--env /' | xargs balena push ",
+    "deploy": "balena push gh_essenlive/ouistiti"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/essenlive/lemon-tri-own-sensor.git"
+  },
+  "author": "qastor",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/essenlive/lemon-tri-own-sensor/issues"
+  },
+  "homepage": "https://github.com/essenlive/lemon-tri-own-sensor#readme"
+}
